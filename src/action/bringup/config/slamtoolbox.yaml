@@ -1,0 +1,80 @@
+#ros2 launch slam_toolbox online_async_launch.py use_sim_time:=false slam_params_file:=/home/inkc/inkc/rws/src/bringup/config/nav2/slam_toolbox/params.yaml
+# <YOUR_MAP_NAME>
+slam_toolbox:
+  ros__parameters:
+
+    # Plugin params 插件相关参数
+    solver_plugin: solver_plugins::CeresSolver   # 使用 CeresSolver 作为优化器插件
+    ceres_linear_solver: SPARSE_NORMAL_CHOLESKY  # 线性求解器类型，稀疏正规方程 Cholesky 分解
+    ceres_preconditioner: SCHUR_JACOBI           # 预处理器类型，Schur Jacobi
+    ceres_trust_strategy: LEVENBERG_MARQUARDT    # 信赖域策略，LM 算法
+    ceres_dogleg_type: TRADITIONAL_DOGLEG        # Dogleg 类型，传统 Dogleg 方法
+    ceres_loss_function: None                    # 损失函数，None 表示不使用鲁棒损失函数
+
+    # ROS Parameters ROS 框架相关参数
+    odom_frame: odom                             # 里程计坐标系名称
+    map_frame: map                               # 地图坐标系名称
+    base_frame: base_link                        # 机器人底盘坐标系 (与 Nav2 保持一致)
+    scan_topic: /livox/scan                     # 激光雷达话题名称
+    use_map_saver: false                          # 是否启用地图保存功能
+    mode: mapping #localization                  # 模式：mapping（建图）或 localization（定位）
+
+    # 如果需要在给定位姿或停靠点继续建图，可设置以下参数（互斥）
+    #map_file_name: test_steve                   # 指定加载的地图文件名
+    # map_start_pose: [0.0, 0.0, 0.0]            # 指定起始位姿 [x, y, yaw]
+    #map_start_at_dock: true                     # 是否从停靠点开始
+
+    debug_logging: false                         # 是否启用调试日志
+    throttle_scans: 2                            # 激光数据降采样比例，1 表示不降采样
+    transform_publish_period: 0.02              # 发布 TF 的周期，0 表示不发布 (0.2→0.02, 5Hz→50Hz)
+    restamp_tf: true                            # TF 用当前时间戳而非 scan 时间, 防止 SLAM 处理延迟导致 TF stale
+    map_update_interval: 5.0                     # 地图更新间隔（秒）
+    resolution: 0.1                              # 地图分辨率（米/像素）
+    min_laser_range: 0.2                         # 激光最小有效距离
+    max_laser_range: 15.0                        # 激光最大有效距离
+    minimum_time_interval: 0.3                   # 两次处理扫描的最小时间间隔（秒）
+    transform_timeout: 0.5                       # TF 查找超时时间（秒）
+    tf_buffer_duration: 30.                      # TF 缓存时长（秒）
+    stack_size_to_use: 40000000                  # 程序栈大小，避免序列化大地图时栈溢出
+    enable_interactive_mode: false                # 是否启用交互模式（RViz 中可手动操作）
+
+    # General Parameters 通用参数
+    # 在这里修改简单匹配
+    use_scan_matching: true                      # 关掉扫描匹配，完全信任里程计
+    use_scan_barycenter: false                    # 是否使用扫描质心进行匹配
+    minimum_travel_distance: 0.0                 # 触发扫描匹配的最小移动距离（米）
+    minimum_travel_heading: 0.0                  # 触发扫描匹配的最小旋转角度（弧度）
+    scan_buffer_size: 30                         # 扫描缓存大小
+    scan_buffer_maximum_scan_distance: 20.0      # 缓存扫描的最大距离
+    link_match_minimum_response_fine: 0.1        # 精细匹配的最小响应阈值
+    link_scan_maximum_distance: 1.0              # 链接扫描的最大距离
+    # 在这里修改回环检测参数
+    loop_search_maximum_distance: 0.0            # 回环搜索的最大距离
+    do_loop_closing: false                        # 是否启用回环检测与闭合
+    loop_match_minimum_chain_size: 8            # 回环匹配的最小链长度
+    loop_match_maximum_variance_coarse: 3.0      # 粗匹配的最大方差
+    loop_match_minimum_response_coarse: 0.25     # 粗匹配的最小响应阈值
+    loop_match_minimum_response_fine: 0.35       # 精细匹配的最小响应阈值
+
+    # Correlation Parameters - Correlation Parameters 相关性匹配参数
+    correlation_search_space_dimension: 0.5      # 相关性搜索空间大小（米）
+    correlation_search_space_resolution: 0.01    # 相关性搜索空间分辨率（米）
+    correlation_search_space_smear_deviation: 0.1 # 相关性搜索空间平滑偏差
+
+    # Correlation Parameters - Loop Closure Parameters 回环相关性参数
+    loop_search_space_dimension: 5.0             # 回环搜索空间大小（米）
+    loop_search_space_resolution: 0.05           # 回环搜索空间分辨率（米）
+    loop_search_space_smear_deviation: 0.03      # 回环搜索空间平滑偏差
+
+    # Scan Matcher Parameters 扫描匹配参数
+    distance_variance_penalty: 0.5               # 距离方差惩罚系数
+    angle_variance_penalty: 1.0                  # 角度方差惩罚系数
+
+    fine_search_angle_offset: 0.00349            # 精细搜索角度偏移（弧度）
+    coarse_search_angle_offset: 0.349            # 粗搜索角度偏移（弧度）
+    coarse_angle_resolution: 0.0349              # 粗搜索角度分辨率（弧度）
+    minimum_angle_penalty: 0.9                   # 最小角度惩罚
+    minimum_distance_penalty: 0.5                # 最小距离惩罚
+    use_response_expansion: true                 # 是否使用响应扩展
+    min_pass_through: 2                          # 最小穿越次数（用于过滤噪声）
+    occupancy_threshold: 0.15                    # 占据概率阈值（地图栅格判定）
