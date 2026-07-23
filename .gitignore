@@ -13,3 +13,23 @@ cmake_install.cmake
 compile_commands.json
 .DS_Store
 Thumbs.db
+
+# Workspace build artifacts (sub-workspaces)
+**/agx_arm_ws/src/agx_arm_ros/build/
+**/agx_arm_ws/src/agx_arm_ros/install/
+**/agx_arm_ws/src/agx_arm_ros/log/
+
+# Realsense workspace
+**/realsense_ws/build/
+**/realsense_ws/install/
+**/realsense_ws/log/
+
+# pyAgxArm build artifacts
+**/pyAgxArm/build/
+**/pyAgxArm/*.egg-info/
+
+# Point cloud maps
+**/pcd/
+
+# Env file
+env.sh

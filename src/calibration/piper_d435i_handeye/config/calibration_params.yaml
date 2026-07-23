@@ -1,0 +1,45 @@
+# ============================================================
+# Piper D435i Hand-Eye Calibration Parameters
+# ============================================================
+# Robot arm: Piper 6-DOF (piper)
+# Camera: Intel RealSense D435i
+# Calibration type: eye_in_hand (相机固定在机械臂末端)
+#
+# 坐标系说明 / Frame definitions:
+#   robot_base_frame:      base_link             机械臂基座
+#   robot_effector_frame:  flange_link           机械臂末端法兰 (camera 安装处)
+#   tracking_base_frame:   camera_link           相机主体坐标系
+#   tracking_marker_frame: camera_marker         二维码坐标系 (aruco_ros 发布)
+# ============================================================
+
+calibration:
+  # 标定类型 / Calibration type
+  type: "eye_in_hand"           # eye_in_hand (眼在手上) 或 eye_on_base (眼在基座)
+
+  # 标定唯一标识 / Unique calibration identifier
+  name: "piper_d435i_eih"       # 每次标定建议使用不同名称以保留历史数据
+
+  # ---------- 机器人坐标系 / Robot Frames ----------
+  robot_base_frame: "base_link"
+  robot_effector_frame: "link6"
+
+  # ---------- 相机/跟踪系统坐标系 / Tracker Frames ----------
+  tracking_base_frame: "camera_link"
+  tracking_marker_frame: "camera_marker"
+
+  # ---------- ArUco 二维码参数 / ArUco Marker ----------
+  aruco:
+    marker_id: 6
+    marker_size: 0.1              # 米 (100mm × 100mm)
+    marker_frame: "camera_marker"
+    reference_frame: "camera_color_optical_frame"
+
+  # ---------- 相机话题 / Camera Topics ----------
+  # Realsense D435i 标准话题名 (使用 realsense-ros 默认命名空间)
+  camera:
+    info_topic: "/camera/color/camera_info"
+    image_topic: "/camera/color/image_raw"
+    depth_topic: "/camera/depth/color/points"
+
+  # ---------- 自由移动 / Freehand Movement ----------
+  freehand_robot_movement: true  # 标定时手动拖拽机械臂

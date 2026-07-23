@@ -1,0 +1,525 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Combined robot: car chassis (car_sim) + piper arm with gripper
+  - Arm base (base_link) is mounted at the chassis BODY origin
+  - Meshes are referenced via package:// paths (ROS convention)
+    package://car_sim/meshes/  ->  car_sim/meshes/
+    package://car_sim/meshes/piper/meshes/  ->  piper/meshes/
+-->
+<robot name="car_with_piper" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+  <!-- ================================================================== -->
+  <!-- CAR CHASSIS (from car_sim/urdf/car_sim.urdf)                      -->
+  <!-- ================================================================== -->
+
+  <link name="BODY">
+    <inertial>
+      <origin xyz="-0.00259004720498476 0.00067655820357232 -0.0538140096287424" rpy="0 0 0"/>
+      <mass value="2.27568516297066"/>
+      <inertia ixx="0.0059562120597256" ixy="1.31889223961593E-06" ixz="2.51283201679577E-06" iyy="0.00735196152742861" iyz="-4.0563085068629E-08" izz="0.0127389179090798"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/BODY.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/BODY.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="F_B_R_Link">
+    <inertial>
+      <origin xyz="4.15811247411746E-06 -0.0387764090043724 2.34397195175429E-05" rpy="0 0 0"/>
+      <mass value="0.524145303230556"/>
+      <inertia ixx="0.000688541696255465" ixy="4.27349479622642E-10" ixz="1.07231824136283E-08" iyy="0.00122439446608104" iyz="8.19227070804737E-08" izz="0.000688691120821302"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_B_R_Link.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_B_R_Link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="F_B_R" type="continuous">
+    <origin xyz="-0.16764 -0.16973 -0.075972" rpy="0 0 3.1416"/>
+    <parent link="BODY"/>
+    <child link="F_B_R_Link"/>
+    <axis xyz="0 -1 0"/>
+  </joint>
+
+  <link name="F_B_L_Link">
+    <inertial>
+      <origin xyz="-4.15299885625497E-06 -0.0387766610714727 2.34389243685268E-05" rpy="0 0 0"/>
+      <mass value="0.524142277597696"/>
+      <inertia ixx="0.00068853758424145" ixy="-3.92881396763585E-10" ixz="-1.06939732529201E-08" iyy="0.0012243872904858" iyz="8.19284767318812E-08" izz="0.000688687134517085"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_B_L_Link.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_B_L_Link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="F_B_L" type="continuous">
+    <origin xyz="-0.16764 0.16974 -0.075972" rpy="0 0 0"/>
+    <parent link="BODY"/>
+    <child link="F_B_L_Link"/>
+    <axis xyz="0 -1 0"/>
+  </joint>
+
+  <link name="F_F_L_Link">
+    <inertial>
+      <origin xyz="4.15812041199004E-06 -0.0387764089921866 2.34397188730168E-05" rpy="0 0 0"/>
+      <mass value="0.524145303423396"/>
+      <inertia ixx="0.000688541696255438" ixy="4.27348346512295E-10" ixz="1.07231841854522E-08" iyy="0.00122439446607239" iyz="8.19227106083357E-08" izz="0.000688691120818141"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_F_L_Link.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_F_L_Link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="F_F_L" type="continuous">
+    <origin xyz="0.15264 0.16974 -0.075972" rpy="0 0 0"/>
+    <parent link="BODY"/>
+    <child link="F_F_L_Link"/>
+    <axis xyz="0 -1 0"/>
+  </joint>
+
+  <link name="F_F_R_Link">
+    <inertial>
+      <origin xyz="4.15299265113522E-06 0.0387766610527853 2.34388943382846E-05" rpy="0 0 0"/>
+      <mass value="0.524142276253491"/>
+      <inertia ixx="0.000688537583988537" ixy="-3.92872414056818E-10" ixz="1.06939579529851E-08" iyy="0.00122438729047445" iyz="-8.19284680795588E-08" izz="0.00068868713426558"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_F_R_Link.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/F_F_R_Link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="F_F_R" type="continuous">
+    <origin xyz="0.15264 -0.16974 -0.075972" rpy="0 0 0"/>
+    <parent link="BODY"/>
+    <child link="F_F_R_Link"/>
+    <axis xyz="0 1 0"/>
+  </joint>
+
+  <link name="mid_Link">
+    <inertial>
+      <origin xyz="-0.000199574115905488 -6.35009226230681E-06 -0.0174674074223493" rpy="0 0 0"/>
+      <mass value="1.10672092820322"/>
+      <inertia ixx="0.000326022185952641" ixy="-4.30083905768617E-08" ixz="2.38151317788481E-06" iyy="0.000351603059138939" iyz="-3.50267298324671E-09" izz="0.000536638419995748"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/mid_Link.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.615686274509804 0.643137254901961 0.674509803921569 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/mid_Link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="mid360" type="fixed">
+    <origin xyz="0.1325 0 0.010499" rpy="0 0 3.1416"/>
+    <parent link="BODY"/>
+    <child link="mid_Link"/>
+    <axis xyz="0 0 0"/>
+  </joint>
+
+  <!-- ================================================================== -->
+  <!-- CONNECTION: Mount piper arm on car chassis                         -->
+  <!--   base_link origin aligns with BODY origin (xyz=0 0 0, rpy=0 0 0) -->
+  <!-- ================================================================== -->
+
+  <joint name="body_to_base_link" type="fixed">
+    <parent link="BODY"/>
+    <child link="base_link"/>
+    <origin xyz="0 0 -0.004" rpy="0 0 0"/>
+  </joint>
+
+  <!-- ================================================================== -->
+  <!-- PIPER ARM (from piper_description.urdf                            -->
+  <!--   All links are identical to the original except:                  -->
+  <!--    - Removed <link name="world"/>                                  -->
+  <!--    - Removed <joint name="world_to_base_link"/>                    -->
+  <!--    - base_link is now child of BODY via body_to_base_link above    -->
+  <!-- ================================================================== -->
+
+  <link name="base_link">
+    <inertial>
+      <origin xyz="-0.00473641164191482 2.56829134630247E-05 0.041451518036016" rpy="0 0 0"/>
+      <mass value="1.02"/>
+      <inertia ixx="0.00267433" ixy="-0.00000073" ixz="-0.00017389" iyy="0.00282612" iyz="0.0000004" izz="0.00089624"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/base_link.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/base_link.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="link1">
+    <inertial>
+      <origin xyz="0.00032 -0.00041 -0.00348" rpy="0 0 0"/>
+      <mass value="0.71"/>
+      <inertia ixx="0.00050027" ixy="0.00000078" ixz="0.00000626" iyy="0.00040879" iyz="0.00000462" izz="0.00045802"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/link1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/link1.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint1" type="revolute">
+    <origin xyz="0 0 0.123" rpy="0 0 0"/>
+    <parent link="base_link"/>
+    <child link="link1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.6179938" upper="2.6179938" effort="100" velocity="5"/>
+  </joint>
+
+  <link name="link2">
+    <inertial>
+      <origin xyz="0.21852 -0.00861 0.00126" rpy="0 0 0"/>
+      <mass value="1.16"/>
+      <inertia ixx="0.00111915" ixy="0.00182916" ixz="0.00019233" iyy="0.06763251" iyz="0.00000767" izz="0.067559"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/link2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/link2.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint2" type="revolute">
+    <origin xyz="0 0 0" rpy="1.5707963 -0.1357866 -3.1415926"/>
+    <parent link="link1"/>
+    <child link="link2"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="3.1415926" effort="100" velocity="5"/>
+  </joint>
+
+  <link name="link3">
+    <inertial>
+      <origin xyz="-0.01999 -0.14808 -0.00053" rpy="0 0 0"/>
+      <mass value="0.5"/>
+      <inertia ixx="0.01347608" ixy="0.00161034" ixz="0.00000066" iyy="0.00046377" iyz="0.00000162" izz="0.01363321"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/link3.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/link3.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint3" type="revolute">
+    <origin xyz="0.28503 0 0" rpy="0 0 -1.7938494"/>
+    <parent link="link2"/>
+    <child link="link3"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.9670597" upper="0" effort="100" velocity="5"/>
+  </joint>
+
+  <link name="link4">
+    <inertial>
+      <origin xyz="0.00013 -0.00076 -0.00394" rpy="0 0 0"/>
+      <mass value="0.38"/>
+      <inertia ixx="0.00017844" ixy="0.00000062" ixz="0.00000067" iyy="0.00018914" iyz="0.00000408" izz="0.00014613"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/link4.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/link4.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint4" type="revolute">
+    <origin xyz="-0.02198 -0.25075 0" rpy="1.5707963 0 0"/>
+    <parent link="link3"/>
+    <child link="link4"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.7453292" upper="1.7453292" effort="100" velocity="5"/>
+  </joint>
+
+  <link name="link5">
+    <inertial>
+      <origin xyz="0.00018 -0.06104 -0.00227" rpy="0 0 0"/>
+      <mass value="0.383"/>
+      <inertia ixx="0.00172318" ixy="0.00000259" ixz="0.00000010" iyy="0.00017936" iyz="0.00000990" izz="0.00171172"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/link5.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/link5.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint5" type="revolute">
+    <origin xyz="0 0 0" rpy="-1.5707963 0 0"/>
+    <parent link="link4"/>
+    <child link="link5"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-1.2217304" upper="1.2217304" effort="100" velocity="5"/>
+  </joint>
+
+  <link name="link6">
+    <inertial>
+      <origin xyz="-0.00003 0.00006 -0.002" rpy="0 0 0"/>
+      <mass value="0.007"/>
+      <inertia ixx="0.00152112" ixy="0.00000202" ixz="0.00000261" iyy="0.00138626" iyz="0.00000002" izz="0.00031152"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/link6.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/link6.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="joint6" type="revolute">
+    <origin xyz="8.8259E-05 -0.091 0" rpy="1.5707963 0 0"/>
+    <parent link="link5"/>
+    <child link="link6"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.0943951" upper="2.0943951" effort="100" velocity="5"/>
+  </joint>
+
+  <!-- ================================================================== -->
+  <!-- GRIPPER (from piper_with_gripper_description.xacro)                -->
+  <!-- ================================================================== -->
+
+  <link name="flange_link">
+    <inertial>
+      <origin xyz="1.151691e-03 0.782428e-03 4.798051e-03" rpy="0 0 0"/>
+      <mass value="0.04"/>
+      <inertia ixx="9.935389e-06" ixy="0.0" ixz="0.0" iyy="10.508003e-06" iyz="0.0" izz="19.652873e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/flange.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/flange.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="flange_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="link6"/>
+    <child link="flange_link"/>
+  </joint>
+
+  <link name="gripper_base">
+    <inertial>
+      <origin xyz="-0.000183807162235591 8.05033155577911E-05 0.0321436689908876" rpy="0 0 0"/>
+      <mass value="0.45"/>
+      <inertia ixx="0.00092934" ixy="0.00000034" ixz="-0.00000738" iyy="0.00071447" iyz="0.00000005" izz="0.00039442"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/gripper_base.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/gripper_base.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_base_joint" type="fixed">
+    <origin xyz="0 0 0.0045" rpy="0 0 0"/>
+    <parent link="flange_link"/>
+    <child link="gripper_base"/>
+  </joint>
+
+  <link name="gripper_link">
+    <inertial>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <mass value="0.01"/>
+      <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+    </inertial>
+  </link>
+
+  <joint name="gripper" type="prismatic">
+    <origin xyz="0 0 0" rpy="0 0 0"/>
+    <parent link="gripper_base"/>
+    <child link="gripper_link"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="0.1" effort="10" velocity="3"/>
+  </joint>
+
+  <link name="gripper_link1">
+    <inertial>
+      <origin xyz="0.00065123185041968 -0.0491929869131989 0.00972258769184025" rpy="0 0 0"/>
+      <mass value="0.025"/>
+      <inertia ixx="0.00007371" ixy="-0.00000113" ixz="0.00000021" iyy="0.00000781" iyz="-0.00001372" izz="0.0000747"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/gripper_link1.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/gripper_link1.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_joint1" type="prismatic">
+    <origin xyz="0 0 0.138" rpy="1.5707963 0 0"/>
+    <parent link="gripper_base"/>
+    <child link="gripper_link1"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="0" upper="0.05" effort="10" velocity="3"/>
+    <mimic joint="gripper" multiplier="0.5" offset="0.0"/>
+  </joint>
+
+  <link name="gripper_link2">
+    <inertial>
+      <origin xyz="0.00065123185041968 -0.0491929869131989 0.00972258769184025" rpy="0 0 0"/>
+      <mass value="0.025"/>
+      <inertia ixx="0.00007371" ixy="-0.00000113" ixz="0.00000021" iyy="0.00000781" iyz="-0.00001372" izz="0.0000747"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/dae/gripper_link2.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="package://car_sim/meshes/piper/meshes/gripper_link2.stl"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint name="gripper_joint2" type="prismatic">
+    <origin xyz="0 0 0.138" rpy="1.5707963 0 -3.1415926"/>
+    <parent link="gripper_base"/>
+    <child link="gripper_link2"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-0.05" upper="0" effort="10" velocity="3"/>
+    <mimic joint="gripper" multiplier="-0.5" offset="0.0"/>
+  </joint>
+
+</robot>
