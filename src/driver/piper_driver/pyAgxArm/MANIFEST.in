@@ -1,0 +1,13 @@
+include LICENSE
+include *.md
+include *.sh
+graft assets
+graft docs
+graft pyAgxArm/demos
+graft pyAgxArm/extensions
+graft pyAgxArm/scripts
+graft tests
+
+prune .github
+prune .vscode
+global-exclude *.py[cod] __pycache__ .DS_Store

@@ -1,0 +1,34 @@
+mid360_driver:
+    ros__parameters:
+        lidar_topic: /livox/lidar
+        imu_topic: /livox/imu
+        lidar_frame: livox_frame
+        imu_frame: imu_frame
+        lidar_publish_time_interval: 0.1
+        host_ip: 192.168.32.100
+
+        publish_tf: true
+
+        transform_enable: false
+        rotation_roll: 0.0
+        rotation_pitch: 0.0
+        rotation_yaw: 0.0
+        translation_x: 0.0
+        translation_y: 0.0
+        translation_z: 0.0
+
+        imu_filter_enable: false
+        imu_filtered_topic: /livox/imu_filtered
+        imu_filter_alpha: 0.2
+
+        min_point_distance: -1.0
+        max_point_distance: -1.0
+        enable_x_filter: false
+        min_x: -2.0
+        max_x: 2.0
+        enable_y_filter: false
+        min_y: -2.0
+        max_y: 2.0
+        enable_z_filter: false
+        min_z: -2.0
+        max_z: 2.0

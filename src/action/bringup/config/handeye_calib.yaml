@@ -1,0 +1,30 @@
+# 手眼标定结果 (Eye-on-Hand)
+# 标定日期: 2026-07-30
+# 算法: Tsai-Lenz (OpenCV calibrateHandEye)
+# 数据: 171 组, Tag ID=12, size=0.128m
+#
+# link6_T_camera (camera_link 在 link6 坐标系中的位姿)
+# 用于 static_transform_publisher: link6 -> camera_link
+
+link6_T_camera:
+  x: -0.026267
+  y: 0.109692
+  z: 0.005331
+  roll: -0.385276
+  pitch: 0.032820
+  yaw: -2.513681
+
+# 齐次矩阵
+matrix:
+  - [-0.808820,  0.554372,  0.196166, -0.026267]
+  - [-0.587139, -0.742689, -0.321994,  0.109692]
+  - [-0.032814, -0.375612,  0.926196,  0.005331]
+  - [ 0.000000,  0.000000,  0.000000,  1.000000]
+
+# 多算法对比 (ΔR Frobenius, Δt L2)
+algorithm_comparison:
+  Tsai-Lenz:   { dR: 0.000000, dt_m: 0.000000 }
+  Park-Martin: { dR: 0.194638, dt_m: 0.015383 }
+  Horaud:      { dR: 0.193435, dt_m: 0.015299 }
+  Andreff:     { dR: 0.206246, dt_m: 0.140662 }
+  Daniilidis:  { dR: 0.131490, dt_m: 0.016451 }

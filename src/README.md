@@ -45,8 +45,12 @@ src/
 │   └── piper_driver/         Piper 机械臂驱动（CAN）
 ├── odom/                     里程计
 │   └── small_point_lio/      LiDAR-IMU 紧耦合里程计
-└── exts/                     工具
-    └── pointcloud_to_laserscan/  Livox 点云转 LaserScan
+└── exts/                     工具（非 ROS 包）
+    ├── pointcloud_to_laserscan/  Livox 点云转 LaserScan
+    └── script/               手眼标定 & ArUco 工具脚本（详见其 README）
+        ├── calib_data_collector.py   标定数据自动采集器 → data/calib_data.csv
+        ├── calib_compute_handeye.py  手眼标定求解（正运动学 + calibrateHandEye）
+        └── rgb_viewer.py             ArUco 检测显示 + 发布 camera_marker TF
 ```
 
 ---
@@ -58,8 +62,8 @@ src/
 | 底盘控制 | ✅ | 串口通信，键盘可遥控，接收 `/cmd_vel` |
 | 机械臂 CAN 控制 | ✅ | 固件 S-V1.8-8，使能正常，`joint_state_publisher_gui` 可操控 |
 | 相机图像 | ✅ | D435i 实时 1280×720，rviz 显示 |
-| ArUco 标定板检测 | ✅ | 识别 id=6，0.1m marker，发布 `camera_marker` TF |
-| 手眼标定 | ✅ | easy_handeye2 GUI 已就绪，可采样计算 |
+| ArUco 标定板检测 | ✅ | `exts/script/rgb_viewer.py` 识别 id=12(0.128m),发布 `camera_marker` TF |
+| 手眼标定 | ✅ | `exts/script/` 自采集 171 组数据求解,静态 TF 已写入 launch |
 | 激光雷达点云 | ✅ | Livox mid360 |
 | LiDAR-IMU 里程计 | ✅ | small_point_lio |
 | Nav2 导航 | ✅ | MPPI 控制器，配置已完成 |
@@ -85,6 +89,25 @@ ros2 launch bringup bringup.launch.py
 
 # 底盘键盘遥控
 ros2 run vehicle_driver keyboard_test
+```
+
+## 手眼标定脚本工具
+
+`piper_d435i_handeye` 包已删除,标定链路改由 `exts/script/` 下的独立脚本完成(无需构建):
+
+| 步骤 | 脚本 | 作用 | 输出 |
+|------|------|------|------|
+| ① 采集 | `calib_data_collector.py` | 相机画面 + ArUco 检测,检测到 id=12 自动记录 6 关节角 + tag 位姿 | `data/calib_data.csv` |
+| ② 求解 | `calib_compute_handeye.py` | 正运动学 + `calibrateHandEye`,解出 `link6_T_camera` | `data/calib_result.txt` |
+| ③ 发布 | `rgb_viewer.py` | 实时检测显示,发布 `camera_color_optical_frame → camera_marker` TF | 动态 TF |
+
+求解结果以静态 TF 形式固化在 `AR_bringup.launch.py`(`link6 → camera_link`,2026-07-30 标定)。
+
+```bash
+cd src/exts/script
+python3 calib_data_collector.py    # ① 摆多个机械臂姿态,自动采集
+python3 calib_compute_handeye.py   # ② 离线求解(可加 CSV 路径或 --list)
+python3 rgb_viewer.py              # ③ 实时检测 + TF(按 Q 退出)
 ```
 
 ## 启动后出现

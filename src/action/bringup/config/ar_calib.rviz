@@ -1,10 +1,21 @@
 Panels:
   - Class: rviz_common/Displays
+    Help Height: 70
     Name: Displays
+    Property Tree Widget:
+      Expanded: ~
+      Splitter Ratio: 0.5
+    Tree Height: 455
   - Class: rviz_common/Views
+    Expanded:
+      - /Current View1
     Name: Views
+    Splitter Ratio: 0.5
   - Class: rviz_common/Time
+    Experimental: false
     Name: Time
+    SyncMode: 0
+    SyncSource: ""
 Visualization Manager:
   Class: ""
   Displays:
@@ -13,46 +24,135 @@ Visualization Manager:
       Class: rviz_default_plugins/Grid
       Color: 160; 160; 164
       Enabled: true
+      Line Style:
+        Line Width: 0.029999999329447746
+        Value: Lines
       Name: Grid
+      Normal Cell Count: 0
+      Offset:
+        X: 0
+        Y: 0
+        Z: 0
       Plane: XY
       Plane Cell Count: 10
       Reference Frame: <Fixed Frame>
       Value: true
     - Class: rviz_default_plugins/Image
-      Enabled: true
+      Enabled: false
       Max Value: 1
       Median window: 5
       Min Value: 0
       Name: Camera
       Normalize Range: true
-      Queue Size: 2
       Topic:
         Depth: 5
         Durability Policy: Volatile
         History Policy: Keep Last
         Reliability Policy: Best Effort
         Value: /camera/camera/color/image_raw
-      Value: true
+      Value: false
     - Class: rviz_default_plugins/TF
       Enabled: true
       Frame Timeout: 15
       Frames:
         All Enabled: true
-      Marker Scale: 0.3
+        BODY:
+          Value: true
+        F_B_L_Link:
+          Value: true
+        F_B_R_Link:
+          Value: true
+        F_F_L_Link:
+          Value: true
+        F_F_R_Link:
+          Value: true
+        base_link:
+          Value: true
+        camera_color_frame:
+          Value: true
+        camera_color_optical_frame:
+          Value: true
+        camera_depth_frame:
+          Value: true
+        camera_depth_optical_frame:
+          Value: true
+        camera_link:
+          Value: true
+        flange_link:
+          Value: true
+        gripper_base:
+          Value: true
+        gripper_link:
+          Value: true
+        gripper_link1:
+          Value: true
+        gripper_link2:
+          Value: true
+        link1:
+          Value: true
+        link2:
+          Value: true
+        link3:
+          Value: true
+        link4:
+          Value: true
+        link5:
+          Value: true
+        link6:
+          Value: true
+        mid_Link:
+          Value: true
+      Marker Scale: 0.30000001192092896
       Name: TF
       Show Arrows: true
       Show Axes: true
       Show Names: true
+      Tree:
+        world:
+          BODY:
+            F_B_L_Link:
+              {}
+            F_B_R_Link:
+              {}
+            F_F_L_Link:
+              {}
+            F_F_R_Link:
+              {}
+            base_link:
+              link1:
+                link2:
+                  link3:
+                    link4:
+                      link5:
+                        link6:
+                          camera_link:
+                            camera_color_frame:
+                              camera_color_optical_frame:
+                                {}
+                            camera_depth_frame:
+                              camera_depth_optical_frame:
+                                {}
+                          flange_link:
+                            gripper_base:
+                              gripper_link:
+                                {}
+                              gripper_link1:
+                                {}
+                              gripper_link2:
+                                {}
+            mid_Link:
+              {}
       Update Interval: 0
       Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
-    Fixed Frame: base_link
+    Fixed Frame: world
     Frame Rate: 30
   Name: root
   Tools:
     - Class: rviz_default_plugins/Interact
+      Hide Inactive Objects: true
     - Class: rviz_default_plugins/MoveCamera
     - Class: rviz_default_plugins/Select
     - Class: rviz_default_plugins/FocusCamera
@@ -63,15 +163,39 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz_default_plugins/Orbit
-      Distance: 1.5
+      Distance: 1.4154483079910278
+      Enable Stereo Rendering:
+        Stereo Eye Separation: 0.05999999865889549
+        Stereo Focal Distance: 1
+        Swap Stereo Eyes: false
+        Value: false
+      Focal Point:
+        X: 0
+        Y: 0
+        Z: 0
+      Focal Shape Fixed Size: true
+      Focal Shape Size: 0.05000000074505806
+      Invert Z Axis: false
       Name: Current View
-      Pitch: 0.6
+      Near Clip Distance: 0.009999999776482582
+      Pitch: 0.6000000238418579
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 0.7
+      Yaw: 0.699999988079071
     Saved: ~
 Window Geometry:
+  Camera:
+    collapsed: false
+  Displays:
+    collapsed: true
   Height: 800
+  Hide Left Dock: true
+  Hide Right Dock: false
+  QMainWindow State: 000000ff00000000fd0000000100000000000002fb000002c6fc0200000004fb0000000c00430061006d006500720061000000003d000000e70000002800fffffffb000000100044006900730070006c006100790073000000003d0000024a000000c900fffffffb0000000a00560069006500770073000000020c000000b8000000a400fffffffb0000000800540069006d0065000000028d000000760000003900ffffff000004b0000002c600000004000000040000000800000008fc0000000100000002000000010000000a0054006f006f006c00730100000000ffffffff0000000000000000
+  Time:
+    collapsed: true
+  Views:
+    collapsed: false
   Width: 1200
-  X: 200
-  Y: 100
+  X: 466
+  Y: 72
