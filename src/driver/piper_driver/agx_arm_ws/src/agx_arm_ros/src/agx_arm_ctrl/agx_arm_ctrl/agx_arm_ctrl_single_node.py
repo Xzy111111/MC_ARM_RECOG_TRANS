@@ -22,6 +22,12 @@ from agx_arm_ctrl.effector import AgxGripperWrapper, Revo2Wrapper, Revo2TouchWra
 
 GRIPPER_JOINT_NAME = "gripper"
 
+# 真实 Piper 硬件关节零位偏置 (rad), 顺序固定为 [joint1..joint6]。
+# 真实硬件 q_hw = [0.0144,0,0,0,0,1.0749] 时, 物理姿态等于 URDF/MoveIt 的 q_ros = [0,0,0,0,0,0]。
+# 关系: q_ros = q_hw - JOINT_ZERO_OFFSETS ;  q_hw_cmd = q_ros_cmd + JOINT_ZERO_OFFSETS
+# 注意: 仅作用于 joint1~joint6, 不影响 gripper (gripper 走独立 /control/gripper_cmd)。
+JOINT_ZERO_OFFSETS = [0.0144, 0.0, 0.0, 0.0, 0.0, 1.0749]
+
 REVO2_FINGER_CONFIG = [
     # (joint_name, attribute_name, max_angle)
     ("thumb_metacarpal_joint", "thumb_base", 1.57),
@@ -511,10 +517,11 @@ class AgxArmRosNode(Node):
         msg.header.stamp = self._float_to_ros_time(joint_states.timestamp)
         
         joints_data = []
-        # arm
+        # arm: SDK 原始硬件角度 → ROS/MoveIt 关节角 (q_ros = q_hw - JOINT_ZERO_OFFSETS)
+        ros_arm_positions = self.hardware_to_ros_joint_positions(list(joint_states.msg))
         joints_data.extend(
             (joint_name, joint_state, velocity, effort)
-            for joint_name, joint_state, velocity, effort in zip(self.arm_joint_names, joint_states.msg, velocitys, efforts)
+            for joint_name, joint_state, velocity, effort in zip(self.arm_joint_names, ros_arm_positions, velocitys, efforts)
         )
         # gripper
         joints_data.extend(self._get_gripper_joint_data())
@@ -644,6 +651,20 @@ class AgxArmRosNode(Node):
             self._publish_hand_status()
 
     ### arm control callbacks
+    def hardware_to_ros_joint_positions(self, hw_positions):
+        """硬件关节角 → ROS/MoveIt 关节角: q_ros = q_hw - JOINT_ZERO_OFFSETS"""
+        return [
+            hw - off
+            for hw, off in zip(hw_positions, JOINT_ZERO_OFFSETS)
+        ]
+
+    def ros_to_hardware_joint_positions(self, ros_positions):
+        """ROS/MoveIt 关节角 → 硬件关节角: q_hw = q_ros + JOINT_ZERO_OFFSETS"""
+        return [
+            ros + off
+            for ros, off in zip(ros_positions, JOINT_ZERO_OFFSETS)
+        ]
+
     def _control_arm_joints(self, joint_pos):
         arm_joints = {
             name : value
@@ -651,7 +672,10 @@ class AgxArmRosNode(Node):
             if name in self.arm_joint_names
         }
         if arm_joints:
-            joints = [arm_joints.get(name, 0) for name in self.arm_joint_names]
+            # /control/joint_states 中的关节角为 ROS/MoveIt 坐标, 转换回硬件坐标再下发
+            joints = self.ros_to_hardware_joint_positions(
+                [arm_joints.get(name, 0) for name in self.arm_joint_names]
+            )
             if self.fast_mode:
                 self.agx_arm.move_js(joints)
                 self.is_mit_mode = True
