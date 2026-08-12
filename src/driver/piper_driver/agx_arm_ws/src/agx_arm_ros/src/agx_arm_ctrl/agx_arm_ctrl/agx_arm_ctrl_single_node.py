@@ -308,12 +308,18 @@ class AgxArmRosNode(Node):
         self.create_subscription(
             MoveMITMsg, "control/move_mit", self._move_mit_callback, 1
         )
+        # 独立夹爪命令入口: /control/gripper_cmd
+        # 消息约定: sensor_msgs/msg/JointState, name=["gripper"], position[0]=width(m), effort[0]=force(N)
+        # 单次发布即生效, 不依赖高频持续发布, 不受 /control/joint_states 状态值影响
+        self.create_subscription(
+            JointState, "control/gripper_cmd", self._gripper_command_callback, 1
+        )
         if self.hand is not None and self.effector_type == "revo2":
             self.create_subscription(
                 HandCmd, "control/hand", self._hand_cmd_callback, 1
             )
             self.create_subscription(
-                HandPositionTimeCmd, "control/hand_position_time", 
+                HandPositionTimeCmd, "control/hand_position_time",
                 self._hand_position_time_cmd_callback, 1
             )
 
@@ -654,6 +660,10 @@ class AgxArmRosNode(Node):
                 self.is_mit_mode = False
 
     def _control_gripper_joint(self, joint_pos, joint_effort):
+        # 旧入口: /control/joint_states 中的 gripper 状态值触发夹爪控制。
+        # 已废弃: 改为独立 /control/gripper_cmd 命令入口, 避免 broadcaster 状态值
+        # (gripper=0.0 @200Hz) 覆盖/触发真实夹爪运动。
+        # 保留此方法为空实现, 仅兼容遗留调用; 真实控制走 _gripper_command_callback。
         if self.gripper is None:
             return
 
@@ -667,6 +677,49 @@ class AgxArmRosNode(Node):
             self.gripper.move(width=width, force=force)
         except ValueError as e:
             self.get_logger().warn(str(e))
+
+    def _gripper_command_callback(self, msg: JointState):
+        # 独立夹爪命令入口: /control/gripper_cmd
+        # 消息约定: name=["gripper"], position[0]=width(m), effort[0]=force(N)
+        # 单次发布即生效, 不依赖高频持续发布。
+        if self.gripper is None:
+            self.get_logger().warn("[gripper_cmd] gripper not initialized")
+            return
+        if self.effector_type != "agx_gripper":
+            self.get_logger().warn(
+                f"[gripper_cmd] effector_type is '{self.effector_type}', not 'agx_gripper'"
+            )
+            return
+        if not self._check_can_control():
+            return
+        if not msg.name or GRIPPER_JOINT_NAME not in msg.name:
+            self.get_logger().warn(
+                f"[gripper_cmd] expected name=['gripper'], got {msg.name}"
+            )
+            return
+        if len(msg.position) < 1:
+            self.get_logger().warn("[gripper_cmd] missing position (width)")
+            return
+
+        idx = msg.name.index(GRIPPER_JOINT_NAME)
+        width = float(msg.position[idx])
+        force = float(
+            msg.effort[idx] if len(msg.effort) > idx else self.gripper_default_effort
+        ) or self.gripper_default_effort
+
+        # 参数 clamp 到 SDK 合法范围 (AgxGripperWrapper: width 0~0.1, force 0.5~3.0)
+        width = max(self.gripper.WIDTH_MIN, min(self.gripper.WIDTH_MAX, width))
+        force = max(self.gripper.FORCE_MIN, min(self.gripper.FORCE_MAX, force))
+
+        self.get_logger().info(
+            f"[gripper_cmd] move_gripper(width={width}, force={force})"
+        )
+        try:
+            ok = self.gripper.move(width=width, force=force)
+            if not ok:
+                self.get_logger().warn("[gripper_cmd] gripper.move returned False")
+        except ValueError as e:
+            self.get_logger().warn(f"[gripper_cmd] {e}")
 
     def _control_hand_joints(self, joint_pos):
         hand_joints = {}
@@ -706,7 +759,8 @@ class AgxArmRosNode(Node):
             for idx, name in enumerate(msg.name)
         }
         self._control_arm_joints(joint_pos)
-        self._control_gripper_joint(joint_pos, joint_effort)
+        # 夹爪控制已移至独立 /control/gripper_cmd 入口。
+        # 不再根据 /control/joint_states 中的 gripper 状态值触发真实夹爪运动。
         self._control_hand_joints(joint_pos)
 
     def _move_j_callback(self, msg: JointState):

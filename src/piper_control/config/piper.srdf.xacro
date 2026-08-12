@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="piper_arm">
+  <!--
+    Piper arm semantic description.
+    No virtual_joint: MoveIt plans directly in the arm root frame base_link,
+    which is the same base_link published by navigation (map->odom->base_link).
+  -->
+
+  <!-- ======================== ARM GROUP ======================== -->
+  <!-- tip_link = gripper_tcp: 夹爪两指之间的抓取中心 (MoveIt 末端参考点) -->
+  <group name="arm">
+    <chain base_link="base_link" tip_link="gripper_tcp" />
+  </group>
+
+  <!-- 夹爪从动关节: gripper_joint1/2 由 gripper 关节 mimic 驱动, 不作为独立规划关节 -->
+  <passive_joint name="gripper_joint1" />
+  <passive_joint name="gripper_joint2" />
+
+  <group_state name="home" group="arm">
+    <joint name="joint1" value="0" />
+    <joint name="joint2" value="0" />
+    <joint name="joint3" value="0" />
+    <joint name="joint4" value="0" />
+    <joint name="joint5" value="0" />
+    <joint name="joint6" value="0" />
+  </group_state>
+
+  <group_state name="ready" group="arm">
+    <joint name="joint1" value="0.0144" />
+    <joint name="joint2" value="0" />
+    <joint name="joint3" value="0" />
+    <joint name="joint4" value="0" />
+    <joint name="joint5" value="0" />
+    <joint name="joint6" value="1.0749" />
+  </group_state>
+
+  <!-- ======================== COLLISION DISABLES ======================== -->
+  <!-- Copied from official agx_arm_moveit SRDF (piper, no effector) -->
+  <disable_collisions link1="base_link" link2="link1" reason="Adjacent" />
+  <disable_collisions link1="base_link" link2="link2" reason="Never" />
+  <disable_collisions link1="base_link" link2="link3" reason="Never" />
+  <disable_collisions link1="link1" link2="link2" reason="Adjacent" />
+  <disable_collisions link1="link1" link2="link3" reason="Never" />
+  <disable_collisions link1="link2" link2="link3" reason="Adjacent" />
+  <disable_collisions link1="link2" link2="link4" reason="Never" />
+  <disable_collisions link1="link3" link2="link4" reason="Adjacent" />
+  <disable_collisions link1="link3" link2="link5" reason="Never" />
+  <disable_collisions link1="link3" link2="link6" reason="Never" />
+  <disable_collisions link1="link4" link2="link5" reason="Adjacent" />
+  <disable_collisions link1="link4" link2="link6" reason="Never" />
+  <disable_collisions link1="link5" link2="link6" reason="Adjacent" />
+
+  <!-- ======================== GRIPPER DISABLE COLLISIONS ======================== -->
+  <disable_collisions link1="gripper_base" link2="gripper_link1" reason="Adjacent" />
+  <disable_collisions link1="gripper_base" link2="gripper_link2" reason="Adjacent" />
+  <disable_collisions link1="gripper_link1" link2="gripper_link2" reason="Adjacent" />
+  <disable_collisions link1="flange_link" link2="link6" reason="Adjacent" />
+  <disable_collisions link1="gripper_base" link2="flange_link" reason="Adjacent" />
+  <disable_collisions link1="gripper_link1" link2="flange_link" reason="Never" />
+  <disable_collisions link1="gripper_link2" link2="flange_link" reason="Never" />
+  <disable_collisions link1="gripper_base" link2="link6" reason="Never" />
+  <disable_collisions link1="gripper_base" link2="link5" reason="Never" />
+  <disable_collisions link1="flange_link" link2="link5" reason="Never" />
+</robot>
